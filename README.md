@@ -12,13 +12,18 @@ In this minimum example, we want to detect sentence that claims that Obama was b
 ## The false claim 
 Obama was born in Kenya.
 https://www.snopes.com/fact-check/native-son/
+
+## Objective
+Given any text that makes the false claim, the sentence (or maybe just the phrase) will be highlighted by the extension. When moused-over or clicked on the extension icon it displays the offending sentence, and link to fact-checking sites (or in much later stages, Quora questions).
+
+## Introducing the hermit
 If the claim is made up of only one idea (is there a better word?), then it will be that. It is conceivable to make train an algorithm today that acts as a learned English speaker who knows nothing about the current affairs - we call him a hermit - and identify all statements that claim that Obama was born in Kenya.
 
 However, the hermit does not know the context. The birther movement gained momentum when someone claimed that Obama was not born in the Hawaii, United States but Kenya. This was used to rally for an impeachment of President Obama because the Consitution requires modern US presidents to be born in the United States.
 
 Therefore any article that makes the following claim needs to be flagged:
-Obama is not born in the United States. (ground truth paraphrased with context one)
-Obama was not born in Hawaii. (ground truth paraphrased with context two)
+"Obama is not born in the United States." (ground truth paraphrased with context one)
+"Obama was not born in Hawaii." (ground truth paraphrased with context two)
 The hermit would not be able to identify the above claims, even though they are ground truth falsehoods according to the context. 
 
 For now, we will include the supplementary claims in the fact-checking document. Generation of supplementary claims given the main claim, the fact-checking article and Internet access seems to be difficult - I have no idea on how to go about doing it.
@@ -50,7 +55,7 @@ Now the object is "the place of birth of Obama", the verb is "is". Comparing obj
 "Kenya is the place of birth of Obama"
 Now "Kenya" is the object.
 
-#### Further context required
+#### Negatives
 The hermit does not know the places of the world. The hermit, based on his unexplained gifted understanding, he knows that Obama is a person, Hawaii and the United States are places (but likely not know what kind of places are they).
 
 "Obama was born in New York."
@@ -80,16 +85,30 @@ Again, the Kenyan heritage is an adjective here. Probably the parser will identi
 "Non-native born Obama is taking our guns away."
 This is a combination of using the supplementary claims and converting its idea into an object. Should we include another ground truth object? That is quite troublesome on the part of the human fact checking document writer.
 
-#### Real examples
-"Obama claims to have been born in Honolulu, Hawaii on August 4, 1961, to Stanley Ann Dunham and Barack Obama Sr. — who had married just six months prior. Some contend that this story is a complete fabrication." - from Conservapedia
-Based on this quote alone, no flag. It does not directly claim that Obama is not born in Hawaii. Exploration of the veracity of the claim should not be flagged as falsehood. However, as the idea will be found in the conclusion, it will be flagged at the conclusion. We should be alerting users when such controversial claims are made without justification. Even with justification, we should still flag the idea at the conclusion since it is controversial and deserves further scrutiny, no matter how convincing is the argument.
+#### Modifiers and qualifiers
+"Obama may have been born in Kenya."
+"Obama may well have been born in Kenya."
+Suggestive, but not a claim. 
 
-I think I need to visit deeply conservative Facebook pages to find more of such statements.
+"Obama is definitely born in Kenya"
+We expect the hermit to not understand sarcasm, even if he does he will read the only the literal meaning instead.
 
+"Obama was allegedly born in Kenya."
+Not a claim, and use of the word "allegedly" is often used in journalism when the claim has not been conclusively proven. Nevertheless, this should still be flagged.
+
+#### Two statements
+"Obama claims to have been born in Honolulu, which is a complete fabrication."
+The second clause negates the claims made by the first clause. Probably this would be detected by the sentence vector. But then, where is Honolulu?
+
+"Obama claims to have been born in Honolulu. This story is a complete fabrication."
+"Obama claims to have been born in Honolulu. Some contend that this story is a complete fabrication." - from Conservapedia, truncated. 
+If these two sentences are viewed in isolation, the hermit will suspect nothing. It is quite complex to allow the algorithm to understand that "this story" refers to Obama claims of being born in Honolulu. However, there is an issue of flagging true claim.  Should attention be drawn to Obama birthplace in an honest essay of Obama's early life?
 
 
 # STAGE ONE - CLAIMS EXTRACTION
+Given a compound sentence, identify all the ideas in the sentence.
 
+### Literature Review
 From StackOverflow 
 Parse sentence into simpler sentences
 https://stackoverflow.com/questions/27695995/decompose-compound-sentence-to-simple-sentences
@@ -117,6 +136,9 @@ Seems that we can look at each "relations" (Obama - was born in - Kenya) and obj
 
 
 # STAGE TWO - CLAIMS SIMILARITY CHECKER
+Given an idea, compare it with a repository of ideas tagged as controversial or false.
+
+### Literature Review
 "The Microsoft Research Paraphrase Corpus (Dolan et al., 2004), which is a standard resource for the paraphrase detection task." - https://nlp.stanford.edu/courses/cs224n/2011/reports/ehhuang.pdf
 
 Kaggle compeitions
@@ -126,7 +148,7 @@ https://www.kaggle.com/c/quora-question-pairs/discussion/30260
 We will compare every idea expressed in the statement with the ground truth. If they match, mark the statement, show the distilled idea and the ground truth. 
 
 
-# Applicability to our project.
+# Applicability to our project
 
 Consider whether this will merely be a detection for opposition shrills. What value does it offer to support opposition viewpoints?
 
