@@ -134,23 +134,26 @@ This seems to be the best bet - demo offered:
 https://www.textrazor.com/demo
 Seems that we can look at each "relations" (Obama - was born in - Kenya) and objects "Kenya-born Obama".
 
+### Topic classification
+https://github.com/RaRe-Technologies/gensim/ seems to offer something.
 
 # STAGE TWO - CLAIMS SIMILARITY CHECKER
 Given an idea, compare it with a repository of ideas tagged as controversial or false.
 
 ### Literature Review
+We will compare every idea expressed in the statement with the ground truth. If they match, mark the statement, show the distilled idea and the ground truth. 
+
 "The Microsoft Research Paraphrase Corpus (Dolan et al., 2004), which is a standard resource for the paraphrase detection task." - https://nlp.stanford.edu/courses/cs224n/2011/reports/ehhuang.pdf
 
 Kaggle compeitions
 https://www.kaggle.com/c/quora-question-pairs/discussion
 https://www.kaggle.com/c/quora-question-pairs/discussion/30260
-
-We will compare every idea expressed in the statement with the ground truth. If they match, mark the statement, show the distilled idea and the ground truth. 
-
+However, we need to know the difference. This is optimised for comparison between two questions that are suspected to be similar. This is different from our use case of comparing one sentence with a list of sentences. 
 
 # Applicability to our project
-
-Consider whether this will merely be a detection for opposition shrills. What value does it offer to support opposition viewpoints?
-
+Consider whether this will merely be a detection for opposition shrills. What value does it offer for opposition supporters?
 For instance, claims such as "death penalty decrease drug abuse rate" could be flagged and discussed elsewhere.
+Usually online news sites cite an previous article usually written by themselves, this extension should provide additional links suggest related article to read when a controversial claim is mentioned or made.
 
+# Comments from Timothy
+For the methods, he suggested that topic classification, and identification of keywords should suffice.
