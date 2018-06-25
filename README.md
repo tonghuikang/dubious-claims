@@ -1,11 +1,11 @@
 # dubious-claims
-T R I G G E R E D
+Automating the process of eye-rolling.
 
-To complement to the fake news project, I feel that it is important to analyse the content of the text. It is meaningless to assign a score to the entire article. A low or high score, no matter how considered was the evaluation, is not helpful in giving an overview of what is wrong with the article.
+For our fake news project, I feel that it is important to analyse the content of the text statement-by-statement. I feel that it is meaningless to assign a score to the entire article. A low or high score, no matter how considered was the evaluation, is not helpful in giving an overview of what is wrong with the article.
 
 We should look the claims the article made or depend on. If they are controversial or considered false, they should be flagged out. It is the duty of the article to be aware of the necessity to back up some of their claims.
 
-In this minimum example, we want to detect sentence that claims that Obama was born in Kenya - which is clearly false.
+In this minimum example, we want to detect sentence that claims that "Obama was born in Kenya" - which is clearly false.
 
 # The minimum example
 
@@ -14,99 +14,127 @@ Obama was born in Kenya.
 https://www.snopes.com/fact-check/native-son/
 
 ## Objective
-Given any text that makes the false claim, the sentence (or maybe just the phrase) will be highlighted by the extension. When moused-over or clicked on the extension icon it displays the offending sentence, and link to fact-checking sites (or in much later stages, Quora questions).
-
-## Introducing the hermit
-If the claim is made up of only one idea (is there a better word?), then it will be that. It is conceivable to make train an algorithm today that acts as a learned English speaker who knows nothing about the current affairs - we call him a hermit - and identify all statements that claim that Obama was born in Kenya.
-
-However, the hermit does not know the context. The birther movement gained momentum when someone claimed that Obama was not born in the Hawaii, United States but Kenya. This was used to rally for an impeachment of President Obama because the Consitution requires modern US presidents to be born in the United States.
-
-Therefore any article that makes the following claim needs to be flagged:
-"Obama is not born in the United States." (ground truth paraphrased with context one)
-"Obama was not born in Hawaii." (ground truth paraphrased with context two)
-The hermit would not be able to identify the above claims, even though they are ground truth falsehoods according to the context. 
-
-For now, we will include the supplementary claims in the fact-checking document. Generation of supplementary claims given the main claim, the fact-checking article and Internet access seems to be difficult - I have no idea on how to go about doing it.
-
-## Mechanics and concepts used
-Word vectors. King - male + female = Queen. Similar words are close apart in the multidimensional space.
-Feature vectors from images. Similar objects have similar feature vectors. We try to express an idea as a vector, and feature vectors that are close to each other are derived from a similar idea.
-Parsing. The state of the art technology, minus interpretable ones since a human cannot do without context. "I saw the man on the hill with the telescope" reference(https://www.cs.upc.edu/~gatius/mai-inlp/parsing_1.pdf). However, when you know the context some interpretations do not make sense, but this seems to be a hard problem for now.
+Given any text that makes the false claim, the sentence (or maybe just the phrase) will be highlighted by the extension. When moused-over or clicked on the extension icon it displays the offending sentence, and link to fact-checking sites if it contradicts a fact or Quora questions if it the opinion is deemed controversial.
 
 ## Standards
-Assuming we have the main claim and the supplementary claims, we shall see whether the following statements should be flagged.
+We see if the following quoted statements should be flagged, and ponder how it can be done. We try to put together an algorithm that conforms to the standards.
 
 #### Ground Truths
 "Obama was born in Kenya." 
-This is the ground truth, definitely should flag.
+Should flag, this is the ground truth.
 
 "Obama is not born in the United States." 
 "Obama was not born in Hawaii."
-Ground truth supplementary claims definitely should flag. 
+Should flag. However, the machine does not know the context. Therefore these should be manually recorded along with the main false claim that should be flagged. 
+
+#### Grammartical errors
+"Obama is born in Kenya."
+Should flag.
 
 #### Synonyms
-"Obama was delivered in Kenya"
-A synonym was used for "born", although it is awkward. A comparison of word vectors of subject-to-subject, verb-to-verb, object-to-object should have worked. I expect this whole technology to have already been in used to detect plagiarism.
+"Obama was delivered in Kenya."
+Should flag, "delivered" is a synonym for "born" (though awkward). A comparison of word vectors of subject-to-subject, verb-to-verb, object-to-object should have worked. I expect this whole technology to have already been in used to detect plagiarism.
+
+"Obama was not born in Honolulu."
+Should flag. But we cannot expect the algorithm to know that Honolulu is a place in Hawaii where Obama was actually born unless we tell it. Either somewhere else in the text it is suggested that Obama was born in Kenya and it is flagged there instead, or the user went to search Obama and Honolulu and a decent search engine should suggest a fact-checking site in its first search results.
 
 #### Paraphrasing
 "The place of birth of Obama in Kenya."
-Now the object is "the place of birth of Obama", the verb is "is". Comparing object-verb-subject to another no longer works in this paraphrased falsehood. Probably what happens is these claims will be presented as a feature vector, and this feature vector is compared with each other. 
+Should flag. Now the object is "the place of birth of Obama", the verb is "is". An algorithm that compares object-verb-subject to another no longer works in this paraphrased falsehood.
 
 "Kenya is the place of birth of Obama"
-Now "Kenya" is the object.
+Should flag. Now "Kenya" is the object.
 
-#### Negatives
-The hermit does not know the places of the world. The hermit, based on his unexplained gifted understanding, he knows that Obama is a person, Hawaii and the United States are places (but likely not know what kind of places are they).
+#### Erroneous
+The algorithm does not know the places in the world. The algorithm knows that Obama is a person, Hawaii and the United States are places (but likely not know what kind of places are they).
 
 "Obama was born in New York."
 "Obama was born in Florida, the United States."
-
+"Obama was born in South Africa."
+"Obama was born in Africa."
+Undecided. The birther conspiracy suggests that Obama was not born in the United States, so the first two should not be flagged. However, the "evidence" points to Obama being born in an African country, and any suggestion of that should be flagged. 
 
 #### Potential false positives
 "Obama has visited Kenya's president's birthplace."
-You cannot simply check if a statement has Obama, Kenya and birth and flag it. This sentence is ridiculous, but there are examples that it is wrong (state some?).
+Should not flag. You cannot simply check if a statement has Obama, Kenya and birth and flag it. This sentence is ridiculous and suggesting. However, and I think we should still not fault the algorithm for flagging it. 
 
 "Obama grew up in Kenya."
-Growing up does not mean being born there, regardless whether this statement is true. However, statements like are usually found in biased articles or comments. Oh well, the hermit shouldn't be able to understand it anyway.
-
+Should not flag. Growing up does not mean being born there, regardless whether this statement is true. However, statements like this are usually found in biased articles or comments. 
+For these two statements, we should find an example when if the algorithm is too sensitive and overshadows the real controversy of the article or causes fatigue on the user. Probably this can be done by adjusting the threshold value before the flag triggers, but if this has to be customised for every dubious claim it may not be feasible.
 
 #### Disguised as an object
 "Kenya-born Obama is trying to take our guns away."
-This assumes that Obama is Kenya born. However, the hermit was tasked to identify ideas, and the ideas are a set of subject-verb-object. The idea now is compressed into an object. 
-
-Therefore we should include convert ideas into an object and add it to the ground truth. Probably this object is considered a feature vector. 
+Should flag. The object with adjective "Kenya-born Obama" assumes that Obama was born in Kenya. However, the algorithm was tasked to identify falsehoods, and for now, the falsehoods are a set of subject-verb-object. The idea now is compressed into an object. Therefore we should include convert falsehood into an object and add it to the ground truth. Probably this object is considered a feature vector. 
 
 "Traitor Kenya-born Obama is trying to take our guns away."
-Would "Traitor and Kenya-born Obama"be considered one object with one feature vector? Interesting. Probably compound objectives will be separated, but how do we decide whether to separate it when there are two words in the adjective - for example "Kenya born Obama". Probably the parsing will be able to identify the nesting structure, but it is safest to do both. Still, try to think of ways to trick the system?
+"Kenya born Obama is trying to take our guns away."
+Should flag. Would the algorithm consider that "Traitor and Kenya-born Obama" be considered one object that is different from "Kenya-born Obama"? Interesting. Probably compound objectives will be separated, and the algorithm detects that there is a "Kenya-born Obama" in the text. However, the algorithm needs to parse the text properly, as it should still flag "Kenya born Obama". What other ways can you think of to trick the system?
 
 "Obama, who was born in Kenya, is taking our guns away."
-Again, the Kenyan heritage is an adjective here. Probably the parser will identify the whole object together, and the object feature vector will be the same as the ground truth object feature variable.
+Should flag. Again, the Kenyan heritage is disguised as a supplementary information here. 
 
 "Non-native born Obama is taking our guns away."
-This is a combination of using the supplementary claims and converting its idea into an object. Should we include another ground truth object? That is quite troublesome on the part of the human fact checking document writer.
+Should flag. This is a combination of using the supplementary claims and converting the falsehood into an object. Should we include another ground truth object? That is quite troublesome on the part of the human fact checker. 
 
-#### Modifiers and qualifiers
-"Obama may have been born in Kenya."
-"Obama may well have been born in Kenya."
-Suggestive, but not a claim. 
-
-"Obama is definitely born in Kenya"
-We expect the hermit to not understand sarcasm, even if he does he will read the only the literal meaning instead.
+#### Contrapositives, Modifiers and qualifiers
+"Obama was not born in Kenya."
+"Obama was born in the United States."
+Should still flag. For an article that honestly explores the controversy, it is good to provide a link to the fact-checking site that debunks the falsehood. Moreover, it is unusual for an article not about the controversy to talk about Obama's birthplace. Again, we need to look out for cases where the flagging the truth is excessive and obscure the more controversial claims the article make.
 
 "Obama was allegedly born in Kenya."
-Not a claim, and use of the word "allegedly" is often used in journalism when the claim has not been conclusively proven. Nevertheless, this should still be flagged.
+Should still flag, even though "allegedly" is often used in journalism when the claim has not been conclusively proven.
+
+"Obama may have been born in Kenya."
+"Obama may well have been born in Kenya."
+Should still flag. Suggestive, but not a claim. 
+
+"Obama is definitely born in Kenya"
+Should flag. We expect the algorithm to not understand sarcasm, even if he does he will read the only the literal meaning instead.
+
+"People who claim that Obama is born in Kenya are idiots."
+"People who claim that Obama is born in Hawaii are idiots."
+Should flag. Since the controversy is mentioned.
 
 #### Two statements
 "Obama claims to have been born in Honolulu, which is a complete fabrication."
-The second clause negates the claims made by the first clause. Probably this would be detected by the sentence vector. But then, where is Honolulu?
+Should flag. The second clause negates the claims made by the first clause.
 
 "Obama claims to have been born in Honolulu. This story is a complete fabrication."
 "Obama claims to have been born in Honolulu. Some contend that this story is a complete fabrication." - from Conservapedia, truncated. 
-If these two sentences are viewed in isolation, the hermit will suspect nothing. It is quite complex to allow the algorithm to understand that "this story" refers to Obama claims of being born in Honolulu. However, there is an issue of flagging true claim.  Should attention be drawn to Obama birthplace in an honest essay of Obama's early life?
+Should flag. It is difficult to expect an algorithm that investigates sentence by sentence to understand that the first statement is being negated in the text. Nevertheless, contrapositives should be flagged, unless it produces mostly false positives.
 
 
-# STAGE ONE - CLAIMS EXTRACTION
-Given a compound sentence, identify all the ideas in the sentence.
+# Proposed method and literature review
+We propose the analysis to be done in two stages.
+
+# STEP ONE - CLAIMS EXTRACTION
+Given a compound sentence, identify and separate all the ideas in the sentence.
+
+### Dependency Parsing
+This demo offered best showcased the capabilities that we want, though does not perform as we wanted in more complex sentences.
+https://www.textrazor.com/demo
+
+"Barack Hussien Obama was born in Kenya." <br>
+Subject |    Predicate |    Object <br>
+Barack Hussien Obama | was born in | Kenya 
+
+"Kenya-born Obama is taking our guns away." <br>
+Subject |    Predicate |    Object <br>
+Kenya-born Obama | is taking away | our guns
+
+"Obama, who is born in Africa, has violated the US constitution." <br>
+Subject |    Predicate |    Object <br>
+who    | is born in | Africa <br>
+Obama who is born in Africa | has violated | the US constitution
+
+"People who claim that Obama was born in Hawaii are idiots."
+Subject |    Predicate |    Object <br>
+who | People claim | that Obama was born in Hawaii are idiots <br>
+who | claim | that Obama was born in Hawaii are idiots <br>
+who Obama | claim was born in | that Hawaii are idiots <br>
+Obama | was born in | that Hawaii are idiots
+
+Even though it is under "relations", relations actually mean another thing. https://www.nltk.org/book/ch07.html Relation extraction seems to be about identifying relations like location, time, or organisation for each applicable object. "[ORG: 'McGlashan &AMP; Sarrail'] 'firm in' [LOC: 'San Mateo']". 
 
 ### Literature Review
 From StackOverflow 
@@ -116,28 +144,24 @@ https://stackoverflow.com/questions/26070245/clause-extraction-using-stanford-pa
 https://stackoverflow.com/questions/9595983/tools-for-text-simplification-java/9606606#9606606
 
 googled "NLP claims extraction"
-https://nlp.stanford.edu/pubs/lrec_splet10-surdeanu.pdf This seemed
+https://nlp.stanford.edu/pubs/lrec_splet10-surdeanu.pdf
 http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.97.5598&rep=rep1&type=pdf healthcare claims processing
-seems to be monetary and legal claims rather than literal claims
+These seem to be monetary and legal claims rather than literal claims
 
 googled "NLP argument extraction"
 http://www.aclweb.org/anthology/W15-0510 doesn't seem to be easy to implement in Python
 http://homepages.abdn.ac.uk/n.oren/pages/TAFA-15/TAFA-15_submission_18.pdf simply suggested that this field is worth exploring
 
-Ok we know the field is known as argument mining: https://en.wikipedia.org/wiki/Argument_mining
+Argument mining?: https://en.wikipedia.org/wiki/Argument_mining
 Ongoing workshops: https://www.research.ibm.com/haifa/Workshops/argmining18/index.shtml
-Seems like quite some work is done on the field already. Once again we are trying to implement to help fulfil our objective.
-(Computational linguistics is actually NLP: http://aclweb.org/anthology/W/W17/)
-http://aclweb.org/anthology/W/W17/W17-5115.pdf seems very relevant at first sight, but it is separating a paragraph into Claim-Premise-Anecdote-Assumption. What I want to split the statement all the claims made.
+Conference proceedings: https://argmining2017.wordpress.com/program/
 
-This seems to be the best bet - demo offered:
-https://www.textrazor.com/demo
-Seems that we can look at each "relations" (Obama - was born in - Kenya) and objects "Kenya-born Obama".
+### Current solution
+https://github.com/philipperemy/Stanford-OpenIE-Python
+However, this uses Java, which can be troublesome. This is an example of it working.
+https://github.com/tonghuikang/Stanford-OpenIE-Python/blob/master/test.ipynb
 
-### Topic classification
-https://github.com/RaRe-Technologies/gensim/ seems to offer something.
-
-# STAGE TWO - CLAIMS SIMILARITY CHECKER
+# STEP TWO - CLAIMS SIMILARITY CHECKER
 Given an idea, compare it with a repository of ideas tagged as controversial or false.
 
 ### Literature Review
@@ -145,15 +169,21 @@ We will compare every idea expressed in the statement with the ground truth. If 
 
 "The Microsoft Research Paraphrase Corpus (Dolan et al., 2004), which is a standard resource for the paraphrase detection task." - https://nlp.stanford.edu/courses/cs224n/2011/reports/ehhuang.pdf
 
-Kaggle compeitions
+Kaggle competitions
 https://www.kaggle.com/c/quora-question-pairs/discussion
 https://www.kaggle.com/c/quora-question-pairs/discussion/30260
 However, we need to know the difference. This is optimised for comparison between two questions that are suspected to be similar. This is different from our use case of comparing one sentence with a list of sentences. 
 
-# Applicability to our project
-Consider whether this will merely be a detection for opposition shrills. What value does it offer for opposition supporters?
-For instance, claims such as "death penalty decrease drug abuse rate" could be flagged and discussed elsewhere.
-Usually online news sites cite an previous article usually written by themselves, this extension should provide additional links suggest related article to read when a controversial claim is mentioned or made.
+### Current solution
+We will use Smooth Inverse Frequency (of Word embeddings to generate sentence embeddings). https://github.com/tonghuikang/SIF/blob/master/examples/sif_embedding.ipynb
+It is claimed by the paper to be better than LSTM or RNN methods. It is a weighted sum of the word vector (generated with word embeddings), and the weighted are inversely related to how often the words appear in the text. "Smooth", in my understanding, refers to a cutoff of the maximum possible weight is smoothened. It appears to be better than Facebook's InferSent: https://github.com/tonghuikang/InferSent/blob/master/encoder/demo.ipynb. Nevertheless, we will include both numbers.
 
-# Comments from Timothy
-For the methods, he suggested that topic classification, and identification of keywords should suffice.
+# THE DEMONSTRATION
+For the demonstration, we will make a colour map. On the x-axis is the list of documented dubious claims. On the y-axis is the list of statements made in the article. 
+
+With the two methods SIF and InferSent we will compute the semantic similarity between all combinations of the documented dubious claims and article claims. This will degree of similarity will be plotted with colours, and we will see if the algorithm is accurate and minimising false positives and negatives. This is my next step. 
+
+# Critical Prediction of Netizens' support
+The most egregious dubious claims are made by the opposition supporters. They are the loudest on the Internet, with a variety of sites such as STR, TOC, ASS. The only pro-PAP site I could think of that toe the line on cultivating commentating of inflammatory comments is FAP. The question is, what is in store for opposition supporters?
+
+For instance, claims such as "death penalty decrease drug abuse rate" could be flagged and discussed elsewhere. Moreover, controversial but potentially non-rebuttable opinions like "Halimah is a puppet" should be flagged, but may be validated through discourse.
