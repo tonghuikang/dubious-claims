@@ -189,5 +189,4 @@ The most egregious dubious claims are made by the opposition supporters. They ar
 For instance, claims such as "death penalty decrease drug abuse rate" could be flagged and discussed elsewhere. Moreover, controversial but potentially non-rebuttable opinions like "Halimah is a puppet" should be flagged, but may be validated through discourse.
 
 # In a picture
-[logo]: https://i.imgur.com/s5CDpsa.png "Demo"
-
+![alt text](https://i.imgur.com/s5CDpsa.png "Demo")
