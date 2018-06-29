@@ -187,3 +187,7 @@ With the two methods SIF and InferSent we will compute the semantic similarity b
 The most egregious dubious claims are made by the opposition supporters. They are the loudest on the Internet, with a variety of sites such as STR, TOC, ASS. The only pro-PAP site I could think of that toe the line on cultivating commentating of inflammatory comments is FAP. The question is, what is in store for opposition supporters?
 
 For instance, claims such as "death penalty decrease drug abuse rate" could be flagged and discussed elsewhere. Moreover, controversial but potentially non-rebuttable opinions like "Halimah is a puppet" should be flagged, but may be validated through discourse.
+
+# In a picture
+[logo]: https://i.imgur.com/s5CDpsa.png "Demo"
+
