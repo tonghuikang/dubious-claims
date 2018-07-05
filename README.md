@@ -181,12 +181,19 @@ It is claimed by the paper to be better than LSTM or RNN methods. It is a weight
 # THE DEMONSTRATION
 For the demonstration, we will make a colour map. On the x-axis is the list of documented dubious claims. On the y-axis is the list of statements made in the article. 
 
-With the two methods SIF and InferSent we will compute the semantic similarity between all combinations of the documented dubious claims and article claims. This will degree of similarity will be plotted with colours, and we will see if the algorithm is accurate and minimising false positives and negatives. This is my next step. 
+With the two methods SIF and InferSent we will compute the semantic similarity between all combinations of the documented dubious claims and article claims. This will degree of similarity will be plotted with colours, and we will see if the algorithm is accurate and minimising false positives and negatives. This is my next step.
 
 # Critical Prediction of Netizens' support
+The purpose of this initiative is to level up the discussion in local politics. People should not be making claims that are controversial as if they are established facts. We need to alert readers of such instances, and it is also a measure of the reliability of the author and the newspaper.
+
 The most egregious dubious claims are made by the opposition supporters. They are the loudest on the Internet, with a variety of sites such as STR, TOC, ASS. The only pro-PAP site I could think of that toe the line on cultivating commentating of inflammatory comments is FAP. The question is, what is in store for opposition supporters?
 
 For instance, claims such as "death penalty decrease drug abuse rate" could be flagged and discussed elsewhere. Moreover, controversial but potentially non-rebuttable opinions like "Halimah is a puppet" should be flagged, but may be validated through discourse.
+
+# Alternatives for the same objective 
+Is detecting dubious claims and triggering the question the best way forward? The general issue in this question is whether Singapore plays a part in the (alleged) 1MDB corruption. The claim would be "Singapore contributed to the 1MDB scandal." However, this claim is not explicitly made in http://statestimesreview.com/2018/07/04/singapore-forced-to-re-open-1mdb-investigation/.  The topic is clearly regarding the 1MDB scandal and how Singapore is involved in it. The question definitely needs to be raised.
+
+The question should also be triggered based on the topic as well. However, let us build a robust dubious-claims detector first.
 
 # In a picture
 ![alt text](https://i.imgur.com/s5CDpsa.png "Demo")
